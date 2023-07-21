@@ -1,5 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
+import "./index.css";
 
 const pizzaData = [
   {
@@ -48,7 +49,7 @@ const pizzaData = [
 
 function App() {
   return (
-    <div>
+    <div className="container">
       <Header />
       <Menu />
       <Footer />
@@ -57,30 +58,103 @@ function App() {
 }
 
 function Header() {
-  return <h1>Fast react pizza Co.</h1>;
-}
-function Menu() {
+  // const style = { color: "red", fontSize: "48px", textTransform: "uppercase" };
+  const style = {};
+
   return (
-    <div>
-      <h2>Our menu</h2>
-      <Pizza />
-      <Pizza />
-      <Pizza />
-    </div>
+    <header className="header">
+      <h1 style={style}>Fast react pizza Co.</h1>
+    </header>
   );
 }
-function Footer() {
+function Menu() {
+  const pizzas = pizzaData;
+  // const pizzas = [];
+  const numPizzas = pizzas.length;
+
   return (
-    <footer>{new Date().toLocaleTimeString()}. We are currently open</footer>
+    <main className="menu">
+      <h2>Our menu</h2>
+
+      {numPizzas > 0 ? (
+        <>
+          <p>
+            Authentic Italian cuisine. 6 creative dishes to choose from. All
+            from our stone oven, all organic, all delicious.
+          </p>
+
+          <ul className="pizzas">
+            {pizzas.map((pizza) => (
+              <Pizza pizzaObj={pizza} key={pizza.name} />
+            ))}
+          </ul>
+        </>
+      ) : (
+        <p>We're still working on our menu. Please come back later :)</p>
+      )}
+
+      {/* <Pizza
+        name="pizza Spinaci"
+        ingredients="Tomato, mozarella, spinach, and ricotta cheese"
+        photoName="pizzas/spinaci.jpg"
+        price={10}
+      />
+      <Pizza
+        name="pizza Funghi"
+        ingredients="Tomato, mozarella, mushrooms, and onion"
+        photoName="pizzas/funghi.jpg"
+        price={12}
+      /> */}
+    </main>
   );
 }
 
-function Pizza() {
+function Pizza({ pizzaObj }) {
+  // if (pizzaObj.soldOut) return null;
   return (
-    <div>
-      <img src="pizzas/spinaci.jpg" alt="pizza spinaci " />
-      <h2>pizza spinaci</h2>
-      <p>Tomato, mozarella, spinach, and ricotta cheese</p>
+    <li className={`pizza ${pizzaObj.soldOut ? "sold-out" : ""}`}>
+      <img src={pizzaObj.photoName} alt={pizzaObj.name} />
+      <div>
+        <h3>{pizzaObj.name}</h3>
+        <p>{pizzaObj.ingredients}</p>
+        <span>{pizzaObj.soldOut ? "SOLD OUT" : pizzaObj.price}</span>
+      </div>
+    </li>
+  );
+}
+
+function Footer() {
+  const hour = new Date().getHours();
+  const openHour = 8;
+  const closeHour = 22;
+  const isOpen = hour >= openHour && hour <= closeHour;
+  console.log(isOpen);
+
+  // if (hour >= openHour && hour <= openHour) alert("we're currently open!");
+  // else {
+  //   alert("Sorry we're closed");
+  // }
+  return (
+    <footer className="footer">
+      {isOpen ? (
+        <Order closeHour={closeHour} openHour={openHour} />
+      ) : (
+        <p>
+          We're happy to welcome you between {openHour}:00 and {closeHour}:00.
+        </p>
+      )}
+    </footer>
+  );
+}
+
+function Order({ closeHour, openHour }) {
+  return (
+    <div className="order">
+      <p>
+        We're open from {openHour}:00 to {closeHour}:00. Come visit us or order
+        online.
+      </p>
+      <button className="btn">Order</button>
     </div>
   );
 }
